@@ -24,7 +24,7 @@ public class CardManager {
 
     public String formatCard(Integer id) {
         Card card = this.getCard(id);
-        return "[id: " + id + "] " + "Question: " + card.getQuestion() + " Answer: " + card.getAnswer();
+        return card.format(id);
     }
 
     public Map<Integer, Card> getCardsMap(){
@@ -81,8 +81,8 @@ public class CardManager {
         List<String> responseCards = new ArrayList<>();
         for (int id : cards.keySet()) {
             Card card = cards.get(id);
-            if(card.getQuestion().contains(search) || card.getAnswer().contains(search)){
-                responseCards.add(formatCard(id));
+            if(card.contains(search)) {
+                responseCards.add(card.format(id));
             }
         }
         return responseCards;

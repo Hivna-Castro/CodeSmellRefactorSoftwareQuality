@@ -29,4 +29,12 @@ public class Card {
         setQuestion(question);
         setAnswer(answer);
     }
+
+    public boolean contains(String keyword) {
+        return question.contains(keyword) || answer.contains(keyword);
+    }
+
+    public String format(int id) {
+        return "[id: " + id + "] Question: " + question + " Answer: " + answer;
+    }
 }
