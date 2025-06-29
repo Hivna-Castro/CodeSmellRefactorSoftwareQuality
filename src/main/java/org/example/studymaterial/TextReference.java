@@ -5,10 +5,9 @@ public class TextReference extends Reference{
     private String format;
 
     public TextReference(String title, String language, int wordCount, String format, String accessRights) {
+        super(title, null, null, language, false);
         this.wordCount = wordCount;
-        this.format = format;
-        this.setTitle(title);
-        this.setLanguage(language);
+        this.format = format;;
         this.setAccessRights(accessRights);
     }
 
