@@ -1,12 +1,17 @@
 package org.example.studyplanner;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ToDo implements PlannerMaterial{
+public class ToDo implements PlannerMaterial, Comparable<ToDo> {
     private Integer id;
     private String title;
     private String description;
     private int priority;
+    private List<LocalDateTime> executionHistory = new ArrayList<>();
 
     public ToDo(Integer id, String title, String description, int priority) {
         this.id = id;
@@ -15,12 +20,41 @@ public class ToDo implements PlannerMaterial{
         this.priority = priority;
     }
 
+    public void addExecutionTime(LocalDateTime dateTime) {
+        executionHistory.add(dateTime);
+    }
+
+    public String formatExecutionHistory() {
+        if (executionHistory.isEmpty()) {
+            return "No tracks found\n";
+        }
+        StringBuilder sb = new StringBuilder();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (LocalDateTime time : executionHistory) {
+            sb.append(formatter.format(time)).append("\n");
+        }
+        return sb.toString();
+    }
+
     @Override
     public String toString() {
         return MessageFormat.format("[(Priority:{3}) ToDo {0}: {1}, {2}]", id, title, description, priority);
     }
 
-    public int getId() {
+    public boolean matches(String searchTerm) {
+        if (searchTerm == null) return false;
+        String search = searchTerm.toLowerCase();
+        return (title != null && title.toLowerCase().contains(search)) ||
+                (description != null && description.toLowerCase().contains(search));
+    }
+
+    @Override
+    public int compareTo(ToDo other) {
+        return Integer.compare(this.priority, other.priority);
+    }
+
+    // Getters e Setters permanecem para compatibilidade
+    public Integer getId() {
         return id;
     }
 
@@ -50,5 +84,7 @@ public class ToDo implements PlannerMaterial{
 
     public void setPriority(int priority) {
         this.priority = priority;
+
     }
 }
+
