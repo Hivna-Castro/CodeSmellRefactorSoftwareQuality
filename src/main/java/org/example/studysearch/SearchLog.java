@@ -9,53 +9,35 @@ public class SearchLog {
     private List<String> searchHistory;
     private Map<String, Integer> searchCount;
     private boolean isLocked;
-    private Integer numUsages;
+    private int numUsages;
     private String logName;
 
     public SearchLog(String logName) {
-        searchHistory = new ArrayList<>();
-        searchCount = new HashMap<>();
+        this.searchHistory = new ArrayList<>();
+        this.searchCount = new HashMap<>();
         this.logName = logName;
-        numUsages = 0;
-        isLocked = false;
+        this.numUsages = 0;
+        this.isLocked = false;
     }
-    public void addSearchHistory(String searchHistory) {
-        this.searchHistory.add(searchHistory);
+
+    public void addSearchHistory(String query) {
+        if (isLocked) {
+            throw new IllegalStateException("Log is locked. Cannot add search.");
+        }
+        searchHistory.add(query);
+        searchCount.put(query, searchCount.getOrDefault(query, 0) + 1);
+        numUsages++;
     }
+
     public List<String> getSearchHistory() {
-        return searchHistory;
-    }
-    public void setSearchHistory(List<String> searchHistory) {
-        this.searchHistory = searchHistory;
-    }
-    public Map<String, Integer> getSearchCount() {
-        return searchCount;
-    }
-    public void setSearchCount(Map<String, Integer> searchCount) {
-        this.searchCount = searchCount;
+        return new ArrayList<>(searchHistory);
     }
 
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public void setLocked(boolean locked) {
-        isLocked = locked;
-    }
-
-    public Integer getNumUsages() {
+    public int getNumUsages() {
         return numUsages;
-    }
-
-    public void setNumUsages(Integer numUsages) {
-        this.numUsages = numUsages;
     }
 
     public String getLogName() {
         return logName;
-    }
-
-    public void setLogName(String logName) {
-        this.logName = logName;
     }
 }
