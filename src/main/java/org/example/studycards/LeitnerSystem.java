@@ -105,4 +105,37 @@ public class LeitnerSystem extends StudyMethod{
         boxes.get(Math.max(boxId - 1, 0)).addCard(cardId);
     }
 
+    public String getRandomCardWithInfo() {
+        StringBuilder response = new StringBuilder();
+        response.append(getMethodName()).append("\n");
+
+        if (boxes == null || boxes.isEmpty()) {
+            response.append("No boxes available.");
+            return response.toString();
+        }
+
+        Box allBoxes = new Box();
+        for (Box box : boxes) {
+            allBoxes.addCards(box.getCards());
+        }
+
+        Integer randomCardId = allBoxes.getRandomCard();
+        if (randomCardId == null) {
+            response.append("No card found.");
+            return response.toString();
+        }
+
+        CardManager manager = CardManager.getCardManager();
+        Card card = manager.getCard(randomCardId);
+
+        response.append("[")
+                .append(randomCardId)
+                .append("] The random question was: ")
+                .append(card.getQuestion())
+                .append(" | The answer is: ")
+                .append(card.getAnswer());
+
+        return response.toString();
+    }
+
 }
