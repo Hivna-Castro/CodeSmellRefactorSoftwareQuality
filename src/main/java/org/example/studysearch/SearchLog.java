@@ -97,4 +97,12 @@ public class SearchLog {
             return results;
         }
     }
+
+    public List<String> logMaterialSearch(String text) {
+        List<String> results = new ArrayList<>();
+        results.addAll(StudyMaterial.getStudyMaterial().searchInMaterials(text));
+        this.logSearch(text);  // já incrementa histórico e numUsages
+        results.add(getFormattedLogInfo());
+        return results;
+    }
 }
