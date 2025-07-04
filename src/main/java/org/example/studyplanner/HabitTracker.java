@@ -25,6 +25,21 @@ public class HabitTracker {
         this.nextId = 1;
     }
 
+    public String formatAllHabitsWithRecords() {
+        StringBuilder response = new StringBuilder();
+        for (Habit habit : this.habits) {
+            response.append("[ Habit: ")
+                    .append(habit.getName())
+                    .append(". Records: ");
+            List<LocalDateTime> records = this.getHabitRecords(habit.getId());
+            for (LocalDateTime record : records) {
+                response.append(this.formatHabitDate(record)).append(", ");
+            }
+            response.append("]");
+        }
+        return response.toString();
+    }
+
     @Override
     public String toString() {
         StringBuilder response = new StringBuilder();
