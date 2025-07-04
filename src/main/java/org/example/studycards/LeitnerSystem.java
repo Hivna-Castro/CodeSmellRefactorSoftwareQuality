@@ -42,26 +42,37 @@ public class LeitnerSystem extends StudyMethod{
     }
 
     public String getRandomCard(List<Box> otherBoxes){
-        if(otherBoxes == null){
+        if (isInvalidBoxList(otherBoxes)) {
             return null;
         }
-        if(otherBoxes.isEmpty()){
-            return null;
-        }
-        Box allBoxes = new Box();
-        for(Box box : otherBoxes){
-            allBoxes.addCards(box.getCards());
-        }
-        Integer randomCard = allBoxes.getRandomCard();
-        if(randomCard == null){
+
+        Box combinedBox = combineAllBoxes(otherBoxes);
+        Integer randomCardId = combinedBox.getRandomCard();
+
+        if(randomCardId == null){
             return "No card found";
         }
+
+        return formatCardResponse(randomCardId);
+    }
+
+    private boolean isInvalidBoxList(List<Box> otherBoxes) {
+        return otherBoxes == null || otherBoxes.isEmpty();
+    }
+
+    private Box combineAllBoxes(List<Box> boxes){
+        Box combined = new Box();
+        for(Box box : boxes){
+            combined.addCards(box.getCards());
+        }
+        return combined;
+    }
+
+    private String formatCardResponse(Integer cardId){
         CardManager manager = CardManager.getCardManager();
-        Card card = manager.getCard(randomCard);
-        String response = "["+ randomCard + "] ";
-        response += "The random question was: " + card.getQuestion() + " | ";
-        response += "The answer is: " + card.getAnswer();
-        return  response;
+        Card card = manager.getCard(cardId);
+        return String.format("[%d] The random question was: %s | The answer is: %s",
+                cardId, card.getQuestion(), card.getAnswer());
     }
 
     public void addCardToBox(Integer id, Integer boxId) {
