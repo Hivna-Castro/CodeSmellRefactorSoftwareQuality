@@ -54,10 +54,8 @@ public class HabitTracker {
         return this.tracker.keySet().stream().toList();
     }
 
-    public int addHabit(String name, String motivation, Integer dailyMinutesDedication, Integer dailyHoursDedication, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer seconds, Boolean isConcluded) {
-        LocalTime lt = LocalTime.of(dailyHoursDedication, dailyMinutesDedication);
-        LocalDateTime startDate = LocalDateTime.of(year, month, day, hour, minute, seconds);
-        Habit habit = new Habit(name, motivation, lt, this.nextId, startDate, isConcluded);
+    public int addHabit(HabitData data) {
+        Habit habit = new Habit(data.getName(), data.getMotivation(), data.getDedicationTime(), this.nextId, data.getStartDate(), data.isConcluded());
         this.habits.add(habit);
         int response = nextId;
         this.tracker.put(nextId, new ArrayList<>());
@@ -65,8 +63,26 @@ public class HabitTracker {
         return response;
     }
 
-    public int handleAddHabitAdapter(List<String> stringProperties, List<Integer> intProperties, boolean isConcluded){
-        return addHabit(stringProperties.get(0), stringProperties.get(1), intProperties.get(0), intProperties.get(1), intProperties.get(2), intProperties.get(3), intProperties.get(4), intProperties.get(5), intProperties.get(6), intProperties.get(7), isConcluded);
+    public int handleAddHabitAdapter(List<String> stringProperties, List<Integer> intProperties, boolean isConcluded) {
+        LocalDateTime startDate = LocalDateTime.of(
+                intProperties.get(2), // year
+                intProperties.get(3), // month
+                intProperties.get(4), // day
+                intProperties.get(5), // hour
+                intProperties.get(6), // minute
+                intProperties.get(7)  // seconds
+        );
+
+        HabitData data = new HabitData.Builder()
+                .name(stringProperties.get(0))
+                .motivation(stringProperties.get(1))
+                .dailyMinutes(intProperties.get(0))
+                .dailyHours(intProperties.get(1))
+                .dateTime(startDate)
+                .isConcluded(isConcluded)
+                .build();
+
+        return addHabit(data);
     }
 
 
