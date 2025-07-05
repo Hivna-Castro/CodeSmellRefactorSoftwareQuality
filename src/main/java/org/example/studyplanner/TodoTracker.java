@@ -27,30 +27,16 @@ public class TodoTracker {
 
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder();
-        for (ToDo toDo : toDos) {
-            String todoInfo = toDo.toString();
-            str.append(todoInfo);
-            str.append("\n");
-            Integer id = toDo.getId();
-            List<LocalDateTime> todosDate = this.tracker.get(id);
-            if(todosDate == null){
-                str.append("No tracks found\n");
-            }else{
-                for (LocalDateTime ldt : todosDate) {
-                    String pattern = "yyyy-MM-dd HH:mm:ss";
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-                    String formattedDate = formatter.format(ldt);
-                    str.append(formattedDate);
-                    str.append("\n");
-                }
-            }
-        }
-        String response = str.toString();
-        if(response.isEmpty()){
+        if (toDos.isEmpty()) {
             return "No ToDos found";
         }
-        return response;
+
+        StringBuilder str = new StringBuilder();
+        for (ToDo toDo : toDos) {
+            List<LocalDateTime> tracks = tracker.getOrDefault(toDo.getId(), new ArrayList<>());
+            str.append(toDo.formatWithTracks(tracks));
+        }
+        return str.toString();
     }
 
     public void addToDoExecutionTime(Integer id){

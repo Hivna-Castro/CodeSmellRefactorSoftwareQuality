@@ -1,6 +1,9 @@
 package org.example.studyplanner;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class ToDo implements PlannerMaterial{
     private Integer id;
@@ -50,5 +53,20 @@ public class ToDo implements PlannerMaterial{
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String formatWithTracks(List<LocalDateTime> tracks) {
+        StringBuilder result = new StringBuilder();
+        result.append(this.toString()).append("\n");
+
+        if (tracks == null || tracks.isEmpty()) {
+            result.append("No tracks found\n");
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            for (LocalDateTime ldt : tracks) {
+                result.append(formatter.format(ldt)).append("\n");
+            }
+        }
+        return result.toString();
     }
 }
