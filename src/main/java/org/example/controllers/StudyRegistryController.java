@@ -1,9 +1,6 @@
 package org.example.controllers;
 
-import org.example.studymaterial.AudioReference;
-import org.example.studymaterial.Reference;
-import org.example.studymaterial.TextReference;
-import org.example.studymaterial.VideoReference;
+import org.example.studymaterial.*;
 import org.example.studyregistry.*;
 
 import java.time.LocalDateTime;
@@ -109,15 +106,63 @@ public class StudyRegistryController {
         studyTaskManager.addRegistry(goal);
     }
 
-    private void editAudio(AudioReference audioReference){
+    private void editAudio(AudioReference audioReference) {
         handleMethodHeader("(Audio Edit)");
-        System.out.println("Type the following info:  AudioReference. AudioQuality audioQuality, boolean isDownloadable, " +
-                "String title, String description, String link, String accessRights, String license, String language, int rating, " +
-                "int viewCount, int shareCount \n");
-        AudioReference.AudioQuality quality =AudioReference.audioQualityAdapter(getInput());
-        audioReference.editAudio(quality, Boolean.parseBoolean(getInput()), getInput(), getInput(), getInput(), getInput(),
-                getInput(), getInput(), Integer.parseInt(getInput()), Integer.parseInt(getInput()), Integer.parseInt(getInput()));
+        printAudioInputInstructions();
+        AudioMetadata metadata = collectAudioMetadataFromUser();
+        audioReference.editAudio(metadata);
     }
+
+    private void printAudioInputInstructions() {
+        System.out.println("""
+        Type the following info:
+        AudioQuality (low, medium, high, very_high)
+        IsDownloadable (true/false)
+        Title
+        Description
+        Link
+        AccessRights
+        License
+        Language
+        Rating (int)
+        ViewCount (int)
+        ShareCount (int)
+    """);
+    }
+
+    private AudioMetadata collectAudioMetadataFromUser() {
+        AudioReference.AudioQuality quality = readAudioQuality();
+        boolean isDownloadable = Boolean.parseBoolean(getInput());
+        AudioDetails details = readAudioDetailsFromUser();
+        AudioStats stats = readAudioStatsFromUser();
+        return new AudioMetadata(quality, isDownloadable, details, stats);
+    }
+
+    private AudioDetails readAudioDetailsFromUser() {
+        String title = getInput();
+        String description = getInput();
+        String link = getInput();
+        String accessRights = getInput();
+        String license = getInput();
+        String language = getInput();
+        return new AudioDetails(title, description, link, accessRights, license, language);
+    }
+
+    private AudioStats readAudioStatsFromUser() {
+        int rating = readInt("Rating");
+        int viewCount = readInt("View Count");
+        int shareCount = readInt("Share Count");
+        return new AudioStats(rating, viewCount, shareCount);
+    }
+
+    private AudioReference.AudioQuality readAudioQuality() {
+        return AudioReference.audioQualityAdapter(getInput());
+    }
+
+    private int readInt(String label) {
+        return Integer.parseInt(getInput());
+    }
+
 
     private AudioReference addAudioReference(){
         handleMethodHeader("(Audio Reference Creation)");

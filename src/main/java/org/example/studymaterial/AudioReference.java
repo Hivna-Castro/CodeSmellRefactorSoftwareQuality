@@ -3,12 +3,14 @@ package org.example.studymaterial;
 import java.util.List;
 
 public class AudioReference extends Reference {
+
     public enum AudioQuality {
-        LOW, MEDIUM, HIGH, VERY_HIGH;
+        LOW, MEDIUM, HIGH, VERY_HIGH
     }
+
     private AudioQuality audioQuality;
 
-    public AudioReference(AudioQuality quality){
+    public AudioReference(AudioQuality quality) {
         this.audioQuality = quality;
     }
 
@@ -16,7 +18,11 @@ public class AudioReference extends Reference {
         return audioQuality;
     }
 
-    public static AudioQuality audioQualityAdapter(String quality){
+    public void setAudioQuality(AudioQuality audioQuality) {
+        this.audioQuality = audioQuality;
+    }
+
+    public static AudioQuality audioQualityAdapter(String quality) {
         return switch (quality.toLowerCase()) {
             case "low" -> AudioQuality.LOW;
             case "medium" -> AudioQuality.MEDIUM;
@@ -26,34 +32,56 @@ public class AudioReference extends Reference {
         };
     }
 
-    public void setAudioQuality(AudioQuality audioQuality) {
-        this.audioQuality = audioQuality;
+    // ✅ Atualizado: método principal com nova estrutura
+    public void editAudio(AudioMetadata metadata) {
+        applyDetails(metadata.getDetails());
+        applyStats(metadata.getStats());
+        applyAudioAttributes(metadata);
     }
 
-     public void editAudio(AudioQuality audioQuality, boolean isDownloadable, String title, String description, String link, String accessRights, String license, String language, int rating,  int viewCount, int shareCount){
-        editBasic(title, description, link);
-        this.setAccessRights(accessRights);
-        this.setLicense(license);
-        this.setAudioQuality(audioQuality);
-        editVideoAttributes(rating, language, viewCount, shareCount, isDownloadable);
-     }
+    private void applyDetails(AudioDetails details) {
+        editBasic(details.title(), details.description(), details.link());
+        this.setAccessRights(details.accessRights());
+        this.setLicense(details.license());
+        this.setLanguage(details.language());
+    }
 
-     public void editAudioAdapter(List<String> properties, List<Integer> intProperties, AudioQuality audioQuality, boolean isDownloadable){
-         this.editAudio(audioQuality, isDownloadable, properties.get(0), properties.get(1), properties.get(2), properties.get(3), properties.get(4), properties.get(5), intProperties.get(0),  intProperties.get(1), intProperties.get(2));
-     }
+    private void applyStats(AudioStats stats) {
+        this.setRating(stats.rating());
+        this.setViewCount(stats.viewCount());
+        this.setShareCount(stats.shareCount());
+    }
 
-     private void editVideoAttributes(int rating, String language, int viewCount, int shareCount,boolean isDownloadable){
-         this.setRating(rating);
-         this.setShareCount(shareCount);
-         this.setViewCount(viewCount);
-         this.setDownloadable(isDownloadable);
-         this.setLanguage(language);
-     }
+    private void applyAudioAttributes(AudioMetadata metadata) {
+        this.setAudioQuality(metadata.getAudioQuality());
+        this.setDownloadable(metadata.isDownloadable());
+    }
 
-     public void editBasic(String title, String description, String link){
-         this.setTitle(title);
-         this.setDescription(description);
-         this.setLink(link);
-     }
+    // ✅ Atualizado: adaptador para criar AudioMetadata com nova estrutura
+    public void editAudioAdapter(List<String> properties, List<Integer> intProperties, AudioQuality audioQuality, boolean isDownloadable) {
+        AudioDetails details = new AudioDetails(
+                properties.get(0), // title
+                properties.get(1), // description
+                properties.get(2), // link
+                properties.get(3), // accessRights
+                properties.get(4), // license
+                properties.get(5)  // language
+        );
 
+        AudioStats stats = new AudioStats(
+                intProperties.get(0), // rating
+                intProperties.get(1), // viewCount
+                intProperties.get(2)  // shareCount
+        );
+
+        AudioMetadata metadata = new AudioMetadata(audioQuality, isDownloadable, details, stats);
+        this.editAudio(metadata);
+    }
+
+    public void editBasic(String title, String description, String link) {
+        this.setTitle(title);
+        this.setDescription(description);
+        this.setLink(link);
+    }
 }
+
