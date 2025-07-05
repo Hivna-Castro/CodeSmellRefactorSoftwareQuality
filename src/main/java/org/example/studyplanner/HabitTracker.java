@@ -111,4 +111,31 @@ public class HabitTracker {
         return habits;
     }
 
+    public String formatAllHabitsWithRecords() {
+        StringBuilder response = new StringBuilder();
+        for (Habit habit : this.habits) {
+            response.append(formatHabitWithRecords(habit));
+        }
+        return response.toString();
+    }
+
+    private String formatHabitWithRecords(Habit habit) {
+        StringBuilder habitInfo = new StringBuilder();
+        habitInfo.append("[ Habit: ")
+                .append(habit.getName())
+                .append(". Records: ");
+        List<LocalDateTime> records = this.getHabitRecords(habit.getId());
+        habitInfo.append(formatRecords(records));
+        habitInfo.append("]");
+        return habitInfo.toString();
+    }
+
+    private String formatRecords(List<LocalDateTime> records) {
+        StringBuilder formattedRecords = new StringBuilder();
+        for (LocalDateTime record : records) {
+            formattedRecords.append(this.formatHabitDate(record)).append(", ");
+        }
+        return formattedRecords.toString();
+    }
+
 }
