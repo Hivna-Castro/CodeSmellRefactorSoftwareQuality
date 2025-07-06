@@ -261,12 +261,65 @@ public class StudyRegistryController {
         System.out.println("Study Plan Added");
     }
 
-    private void getWeekInfo(){
-        System.out.println("(Study Task Manager Week Set Up) Type the following info: String planName, String objectiveTitle, " +
-                "String objectiveDescription, String materialTopic, String materialFormat, String goal, String reminderTitle, " +
-                "String reminderDescription, String mainTaskTitle, String mainHabit, String mainCardStudy");
-        studyTaskManager.setUpWeek(getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(),
-                getInput(), getInput(), getInput());
+    private void getWeekInfo() {
+        String planName = getPlanName();
+        WeeklyObjective objective = getWeeklyObjective();
+        StudyMaterialInfo material = getStudyMaterialInfo();
+        StudyReminder reminder = getStudyReminder();
+        MainTask mainTask = getMainTask();
+
+        studyTaskManager.setUpWeek(planName, objective, material, reminder, mainTask);
+    }
+
+    private String getPlanName() {
+        System.out.println("1. planName");
+        return getInput();
+    }
+
+    private WeeklyObjective getWeeklyObjective() {
+        System.out.println("2. objectiveTitle");
+        String title = getInput();
+
+        System.out.println("3. objectiveDescription");
+        String description = getInput();
+
+        System.out.println("6. goal");
+        String goal = getInput();
+
+        return new WeeklyObjective(title, description, goal);
+    }
+
+    private StudyMaterialInfo getStudyMaterialInfo() {
+        System.out.println("4. materialTopic");
+        String topic = getInput();
+
+        System.out.println("5. materialFormat");
+        String format = getInput();
+
+        return new StudyMaterialInfo(topic, format);
+    }
+
+    private StudyReminder getStudyReminder() {
+        System.out.println("7. reminderTitle");
+        String title = getInput();
+
+        System.out.println("8. reminderDescription");
+        String description = getInput();
+
+        return new StudyReminder(title, description);
+    }
+
+    private MainTask getMainTask() {
+        System.out.println("9. mainTaskTitle");
+        String taskTitle = getInput();
+
+        System.out.println("10. mainHabit");
+        String habit = getInput();
+
+        System.out.println("11. mainCardStudy");
+        String cardStudy = getInput();
+
+        return new MainTask(taskTitle, habit, cardStudy);
     }
 
     private void handleSetUpWeek(){
