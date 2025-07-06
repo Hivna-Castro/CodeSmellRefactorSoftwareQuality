@@ -50,13 +50,38 @@ public class StudyRegistryController {
 
     private void handleSetObjective(StudyObjective objective){
         handleMethodHeader("(Study Objective Edit)");
-        System.out.println("Type the following info: Integer id, Integer priority " +
-                "Integer practicedDays, int day, int month, int year, String name, String title, String description, " +
-                "String topic, String objectiveInOneLine, String objectiveFullDescription, String motivation, " +
-                "Double duration, boolean isActive  \n");
-        objective.handleSetObjective(Integer.parseInt(getInput()), Integer.parseInt(getInput()),Integer.parseInt(getInput()),Integer.parseInt(getInput()),Integer.parseInt(getInput()),
-                Integer.parseInt(getInput()), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(),
-                Double.parseDouble(getInput()), Boolean.parseBoolean(getInput()));
+        System.out.println("Type the following info in order:\n" +
+                "Integer id, Integer priority, Integer practicedDays, int day, int month, int year,\n" +
+                "String name, String title, String description, String topic,\n" +
+                "String objectiveInOneLine, String objectiveFullDescription, String motivation,\n" +
+                "Double duration, boolean isActive");
+
+        List<Integer> intProps = List.of(
+                Integer.parseInt(getInput()), // id
+                Integer.parseInt(getInput()), // priority
+                Integer.parseInt(getInput()), // practicedDays
+                Integer.parseInt(getInput()), // day
+                Integer.parseInt(getInput()), // month
+                Integer.parseInt(getInput())  // year
+        );
+
+        List<String> stringProps = List.of(
+                getInput(), // name
+                getInput(), // title
+                getInput(), // description
+                getInput(), // topic
+                getInput(), // objectiveInOneLine
+                getInput(), // objectiveFullDescription
+                getInput()  // motivation
+        );
+
+        Double duration = Double.parseDouble(getInput());
+        boolean isActive = Boolean.parseBoolean(getInput());
+
+        ObjectiveProperties props = new ObjectiveProperties.Builder()
+                .fromRawInput(intProps, stringProps, duration, isActive)
+                .build();
+        props.applyTo(objective);
     }
 
     private StudyObjective getStudyObjectiveInfo(){
